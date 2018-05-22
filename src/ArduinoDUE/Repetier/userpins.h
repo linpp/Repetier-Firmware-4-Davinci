@@ -61,8 +61,9 @@
 
 //fan PINS
 #define FAN_BOARD_PIN -1
-#define ORIG_FAN_PIN        25
-#define ORIG_FAN2_PIN       4
+#define ORIG_FAN_PIN        25  // extruder 0 fan A
+#define ORIG_FAN2_PIN       4   // extruder 1 fan A
+#define ORIG_FANB_PIN       85  // extruder 0 fan B
 
 //additionnal PINS
 #define LED_PIN         -1
