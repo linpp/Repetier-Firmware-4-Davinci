@@ -30,9 +30,9 @@
 
 //Version
 #define VERSION_MAJOR "1"
-#define VERSION_MINOR_YEAR "17"
-#define VERSION_MINOR_MONTH "08"
-#define VERSION_MINOR_DAY "01"
+#define VERSION_MINOR_YEAR "21"
+#define VERSION_MINOR_MONTH "02"
+#define VERSION_MINOR_DAY "08"
 #define VERSION_BUILD "1"
 
 //Davinci screen is not standard reprap it is WINSTAR 16x4
@@ -51,7 +51,7 @@
 #define UI_AUTOLIGHTOFF_AFTER 1
 #define ENABLE_CLEAN_DRIPBOX 1
 #define ENABLE_CLEAN_NOZZLE 1
-#define FEATURE_ENCODER	0
+#define FEATURE_ENCODER 0
 //ensure of some define if AiO
 #if DAVINCI==4
 //no drip box
@@ -119,6 +119,7 @@
 #define NUM_MOTOR_DRIVERS 1 
 #define MOTOR_DRIVER_1(var) StepperDriver<TURNTABLE_STEP_PIN,TURNTABLE_DIR_PIN,TURNTABLE_ENABLE_PIN,TURNTABLE_INVERT_DIR,TURNTABLE_INVERT_ENABLE> var(TURNTABLE_STEP_PER_MM,TURNTABLE_DEFAULT_SPEED)
 #endif
+
 
 /* Some words on units:
 
@@ -451,11 +452,11 @@ cog. Direct drive extruder need 0. */
 #define EXT0_ADVANCE_BACKLASH_STEPS 0
 /** \brief Temperature to retract filament when extruder is heating up. Overridden if EEPROM activated.
 */
-#define EXT0_WAIT_RETRACT_TEMP 		150
+#define EXT0_WAIT_RETRACT_TEMP      150
 /** \brief Units (mm/inches) to retract filament when extruder is heating up. Overridden if EEPROM activated. Set
 to 0 to disable.
 */
-#define EXT0_WAIT_RETRACT_UNITS 	0
+#define EXT0_WAIT_RETRACT_UNITS     0
 
 /** You can run any GCODE command on extruder deselect/select. Separate multiple commands with a new line \n.
 That way you can execute some mechanical components needed for extruder selection or retract filament or whatever you need.
@@ -582,8 +583,8 @@ needed to move the motor cog in reverse direction until it hits the driving
 cog. Direct drive extruder need 0. */
 #define EXT1_ADVANCE_BACKLASH_STEPS 0
 
-#define EXT1_WAIT_RETRACT_TEMP 	150
-#define EXT1_WAIT_RETRACT_UNITS	0
+#define EXT1_WAIT_RETRACT_TEMP  150
+#define EXT1_WAIT_RETRACT_UNITS 0
 #define EXT1_SELECT_COMMANDS "M117 Extruder 2"
 #define EXT1_DESELECT_COMMANDS ""
 /** The extruder cooler is a fan to cool the extruder when it is heating. If you turn the extruder on, the fan goes on. */
@@ -726,9 +727,12 @@ If you have a PTC thermistor instead of a NTC thermistor, keep the adc values in
 #define NUM_TEMPS_USERTHERMISTOR1 19
 #define USER_THERMISTORTABLE1 {{628,1280},{859,1200},{1113,1120},{1382,1040},{1660,960},{1938,880},{2211,800},{2473,720},{2718,640},{2945,560},{3148,480},{3328,400},{3482,320},{3613,240},{3722,160},{3815,80},{3895,0},{3972,-80},{4055,-160}}
 
-/** Number of entries in the user thermistor table 2. Set to 0 to disable it. */
-#define NUM_TEMPS_USERTHERMISTOR2 0
-#define USER_THERMISTORTABLE2  {}
+// Custom table for DaVinci 1.0 with ATC semitec 104GT-2 thermistor and parallel R1=10kohm,
+// series R2=4.7kohm with resistor values taken from http://www.atcsemitec.co.uk/gt-2-glass-thermistors.html.
+// Table is computed with included Dv10-E3Dv6-ThermistorTable.py.
+// Turn on by setting EXT0_TEMPSENSOR_TYPE to 7 above. 
+#define NUM_TEMPS_USERTHERMISTOR2 33
+#define USER_THERMISTORTABLE2 {{69,2400},{79,2320},{91,2240},{105,2160},{123,2080},{144,2000},{169,1920},{200,1840},{237,1760},{282,1680},{337,1600},{403,1520},{484,1440},{581,1360},{696,1280},{832,1200},{989,1120},{1165,1040},{1359,960},{1563,880},{1769,800},{1968,720},{2150,640},{2308,560},{2440,480},{2544,400},{2622,320},{2678,240},{2718,160},{2744,80},{2761,0},{2772,-80},{2779,-160}}
 
 #else
 #define NUM_TEMPS_USERTHERMISTOR0 28
@@ -1116,6 +1120,46 @@ on this endstop.
 #define Y_MIN_POS 0
 #define Z_MIN_POS 0
 #endif
+
+//Unload Position
+#if DAVINCI==0 
+#define UNLOAD_POS_E0_X 0
+#define UNLOAD_POS_E0_Y 0
+#define UNLOAD_POS_E1_X 0
+#define UNLOAD_POS_E1_Y 0
+#endif
+#if DAVINCI==1 //cleaner of Davinci 1.0 is not in same position of 2.0 neither AiO
+#if MODEL == 0
+    #define UNLOAD_POS_E0_X X_MIN_POS
+    #define UNLOAD_POS_E0_Y Y_MIN_POS
+    #define UNLOAD_POS_E1_X X_MIN_POS
+    #define UNLOAD_POS_E1_Y Y_MIN_POS
+#else
+    #define UNLOAD_POS_E0_X X_MIN_POS
+    #define UNLOAD_POS_E0_Y Y_MIN_POS
+    #define UNLOAD_POS_E1_X X_MIN_POS
+    #define UNLOAD_POS_E1_Y Y_MIN_POS
+#endif
+#endif
+#if DAVINCI==2 || DAVINCI==3
+#if MODEL == 0
+    #define UNLOAD_POS_E0_X 199
+    #define UNLOAD_POS_E0_Y Y_MIN_POS
+    #define UNLOAD_POS_E1_X X_MIN_POS
+    #define UNLOAD_POS_E1_Y Y_MIN_POS
+#else
+    #define UNLOAD_POS_E0_X 195
+    #define UNLOAD_POS_E0_Y Y_MIN_POS+27
+    #define UNLOAD_POS_E1_X X_MIN_POS
+    #define UNLOAD_POS_E1_Y Y_MIN_POS+27
+#endif
+#endif
+#if DAVINCI==4
+#define UNLOAD_POS_E0_X 0
+#define UNLOAD_POS_E0_Y 0
+#endif
+
+
 
 // ##########################################################################################
 // ##                           Movement settings                                          ##
@@ -1965,6 +2009,7 @@ the language can be switched any time. */
 #define LANGUAGE_CZ_ACTIVE 0 // Czech
 #define LANGUAGE_PL_ACTIVE 0 // Polish
 #define LANGUAGE_TR_ACTIVE 0 // Turkish
+#define LANGUAGE_JP_ACTIVE 1 // Japanese
 
 /* Some displays loose their settings from time to time. Try uncommenting the 
 auto-repair function if this is the case. It is not supported for all display
