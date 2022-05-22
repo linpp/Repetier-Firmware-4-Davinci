@@ -2469,11 +2469,14 @@ bool reportTempsensorError()
     for(uint8_t i = 0; i < NUM_TEMPERATURE_LOOPS; i++)
     {
 #if HAVE_HEATED_BED
-        if(i == HEATED_BED_INDEX) Com::printF(Com::tHeatedBed);
+        if(i == HEATED_BED_INDEX)
+            Com::printF(Com::tHeatedBed);
         else 
 #endif
-		if(i < NUM_EXTRUDER) Com::printF(Com::tExtruderSpace,i);
-		else Com::printF(PSTR("Other:"));
+		if(i < NUM_EXTRUDER)
+            Com::printF(Com::tExtruderSpace,i);
+		else
+            Com::printF(PSTR("Other:"));
 		TemperatureController *act = tempController[i];
         int temp = act->currentTemperatureC;
         if(temp < MIN_DEFECT_TEMPERATURE || temp > MAX_DEFECT_TEMPERATURE)

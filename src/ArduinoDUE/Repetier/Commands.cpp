@@ -378,7 +378,8 @@ void Commands::setFanSpeed(int speed, bool immediately) {
 void Commands::setFan2Speed(int speed) {
 #if FAN2_PIN >- 1 && FEATURE_FAN2_CONTROL
     speed = constrain(speed,0,255);
-    Printer::setFan2SpeedDirectly(speed);
+    analogWrite(FAN2_PIN,speed);              // hardware PWM, must be PWM capable pin
+//    Printer::setFan2SpeedDirectly(speed);   // software PWM
     Com::printFLN(Com::tFan2speed,speed); // send only new values to break update loops!
 #endif
 }

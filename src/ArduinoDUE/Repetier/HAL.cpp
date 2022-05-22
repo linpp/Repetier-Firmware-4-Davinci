@@ -256,7 +256,7 @@ void HAL::syncEEPROM() { // store to disk if changed
 	  if (!eepromFile.seekSet(0))
 		  failed = true;
 
-	  if(!failed && !eepromFile.write(virtualEeprom, EEPROM_BYTES) == EEPROM_BYTES)
+	  if(!failed && !(eepromFile.write(virtualEeprom, EEPROM_BYTES) == EEPROM_BYTES))
       failed = true; 
     
     if(failed) {
@@ -1148,14 +1148,19 @@ void PWM_TIMER_VECTOR ()
     }
 #endif
 #if FAN2_PIN > -1 && FEATURE_FAN2_CONTROL
-if(fan2Kickstart == 0)
-{
-	#if PDM_FOR_COOLER
-	pulseDensityModulate(FAN2_PIN, pwm_pos[PWM_FAN2], pwm_pos_set[PWM_FAN2], false);
-	#else
-	if(pwm_pos_set[PWM_FAN2] == pwm_count_cooler && pwm_pos_set[PWM_FAN2] != COOLER_PWM_MASK) WRITE(FAN2_PIN,0);
-	#endif
-}
+    if(fan2Kickstart == 0)
+    {
+#if PDM_FOR_COOLER
+      pulseDensityModulate(FAN2_PIN, pwm_pos[PWM_FAN2], pwm_pos_set[PWM_FAN2], false);
+#else
+      if(pwm_pos_set[PWM_FAN2] == pwm_count_cooler && pwm_pos_set[PWM_FAN2] != COOLER_PWM_MASK) WRITE(FAN2_PIN,0);
+#endif
+    }
+    else
+    {
+    	// Explicitly set fan max speed while in kickstart interval.
+    	WRITE(FAN2_PIN, 1);
+    }
 #endif
 #if defined(FAN_THERMO_PIN) && FAN_THERMO_PIN > -1
 	#if PDM_FOR_COOLER

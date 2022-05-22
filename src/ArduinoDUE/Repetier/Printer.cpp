@@ -529,7 +529,7 @@ void Printer::setFanSpeedDirectly(uint8_t speed) {
     if(pwm_pos[PWM_FAN1] == speed)
         return;
 #if FAN_KICKSTART_TIME
-    if(fanKickstart == 0 && speed > pwm_pos[PWM_FAN1] && speed < 128)
+    if(fanKickstart == 0 && speed > pwm_pos[PWM_FAN1] && speed < 85)
     {
          if(pwm_pos[PWM_FAN1]) fanKickstart = FAN_KICKSTART_TIME / 100;
          else                  fanKickstart = FAN_KICKSTART_TIME / 25;
@@ -539,18 +539,18 @@ void Printer::setFanSpeedDirectly(uint8_t speed) {
 #endif
 }
 void Printer::setFan2SpeedDirectly(uint8_t speed) {
-	#if FAN2_PIN > -1 && FEATURE_FAN2_CONTROL
+#if FAN2_PIN > -1 && FEATURE_FAN2_CONTROL
 	if(pwm_pos[PWM_FAN2] == speed)
 		return;
-	#if FAN_KICKSTART_TIME
+#if FAN2_KICKSTART_TIME
 	if(fan2Kickstart == 0 && speed > pwm_pos[PWM_FAN2] && speed < 85)
 	{
-		if(pwm_pos[PWM_FAN2]) fan2Kickstart = FAN_KICKSTART_TIME / 100;
-		else                  fan2Kickstart = FAN_KICKSTART_TIME / 25;
+		if(pwm_pos[PWM_FAN2]) fan2Kickstart = FAN2_KICKSTART_TIME / 100;
+		else                  fan2Kickstart = FAN2_KICKSTART_TIME / 25;
 	}
-	#endif
+#endif
 	pwm_pos[PWM_FAN2] = speed;
-	#endif
+#endif
 }
 
 void Printer::reportPrinterMode() {

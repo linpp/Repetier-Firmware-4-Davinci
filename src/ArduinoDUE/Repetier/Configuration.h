@@ -912,9 +912,9 @@ In any case, laser only enables while moving. At the end of a move it gets
 automatically disabled. 
 */
 
-#define SUPPORT_LASER 0 // set 1 to enable laser support
-#define LASER_PIN -1    // set to pin enabling laser
-#define LASER_ON_HIGH 1 // Set 0 if low signal enables laser
+#define SUPPORT_LASER 1 // set 1 to enable laser support
+#define LASER_PIN ORIG_FAN2_PIN    // set to pin enabling laser, PWM capable pin
+#define LASER_ON_HIGH 1 // Set 0 if low signal enables laser  // Use 0 if hooking FANB- directly to PWM+, 1 if using inverter circuit
 
 // ##########################################################################################
 // ##                              CNC configuration                                       ##
@@ -1609,6 +1609,7 @@ WARNING: Servos can draw a considerable amount of current. Make sure your system
 /** Some fans won't start for low values, but would run if started with higher power at the beginning.
 This defines the full power duration before returning to set value. Time is in milliseconds */
 #define FAN_KICKSTART_TIME  200
+//#define FAN2_KICKSTART_TIME  200
 
 
 
@@ -1922,8 +1923,8 @@ is also used for the heater if you have 2 extruders connected. */
 #endif
 
 /* You can have a second fan controlled by adding P1 to M106/M107 command. */ 
-#define FEATURE_FAN2_CONTROL 0
-//#define FAN2_PIN ORIG_FAN2_PIN
+#define FEATURE_FAN2_CONTROL 1
+#define FAN2_PIN ORIG_FAN2_PIN
 
 /* By setting FAN_BOARD_PIN to a pin number you get a board cooler. That fan 
 goes on as soon as moves occur. Mainly to prevent overheating of stepper drivers. */
@@ -1998,18 +1999,18 @@ Select the languages to use. On first startup user can select
 the language from a menu with activated languages. In Configuration->Language
 the language can be switched any time. */
 #define LANGUAGE_EN_ACTIVE 1 // English
-#define LANGUAGE_DE_ACTIVE 1 // German
-#define LANGUAGE_NL_ACTIVE 1 // Dutch
+#define LANGUAGE_DE_ACTIVE 0 // German
+#define LANGUAGE_NL_ACTIVE 0 // Dutch
 #define LANGUAGE_PT_ACTIVE 0 // Brazilian portuguese
-#define LANGUAGE_IT_ACTIVE 1 // Italian
+#define LANGUAGE_IT_ACTIVE 0 // Italian
 #define LANGUAGE_ES_ACTIVE 0 // Spanish
 #define LANGUAGE_FI_ACTIVE 0 // Finnish
 #define LANGUAGE_SE_ACTIVE 0 // Swedish
-#define LANGUAGE_FR_ACTIVE 1 // French
+#define LANGUAGE_FR_ACTIVE 0 // French
 #define LANGUAGE_CZ_ACTIVE 0 // Czech
 #define LANGUAGE_PL_ACTIVE 0 // Polish
 #define LANGUAGE_TR_ACTIVE 0 // Turkish
-#define LANGUAGE_JP_ACTIVE 1 // Japanese
+#define LANGUAGE_JP_ACTIVE 0 // Japanese
 
 /* Some displays loose their settings from time to time. Try uncommenting the 
 auto-repair function if this is the case. It is not supported for all display
@@ -2153,4 +2154,3 @@ Values must be in range 1..255
 //#define CUSTOM_EVENTS
 
 #endif
-
