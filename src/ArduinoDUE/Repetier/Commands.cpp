@@ -2426,17 +2426,26 @@ void Commands::processMCode(GCode *com) {
             break;
         case 451:
             Printer::mode = PRINTER_MODE_FFF;
+#if USE_HEATER0_FOR_LASER_POWER == 1            
+            WRITE(LASER_PWR,LOW);
+#endif
             Printer::reportPrinterMode();
             break;
         case 452:
 #if defined(SUPPORT_LASER) && SUPPORT_LASER
             Printer::mode = PRINTER_MODE_LASER;
+#if USE_HEATER0_FOR_LASER_POWER == 1            
+            WRITE(LASER_PWR,HIGH);
+#endif
 #endif
             Printer::reportPrinterMode();
             break;
         case 453:
 #if defined(SUPPORT_CNC) && SUPPORT_CNC
             Printer::mode = PRINTER_MODE_CNC;
+#if USE_HEATER0_FOR_LASER_POWER == 1            
+            WRITE(LASER_PWR,LOW);
+#endif
 #endif
             Printer::reportPrinterMode();
             break;

@@ -25,7 +25,7 @@
 #define MODEL  1//"0" for first generation (jumper JP1 to reset ) , "1" for new generation   (jumper J37 to reset)
 #define REPURPOSE_FAN_TO_COOL_EXTRUSIONS 0 //Setting this to 1 will repurpose the main Extruder cooling fan to be controlled VIA M106/M107
                                            //Warning: for DaVinci 1.0 need to add a permanent fan with power supply to cool extruder
-
+#define USE_HEATER0_FOR_LASER_POWER 1 // Setting this to 1 will allow using the heater cable to power a 3.3A laser
 // ################ END MANUAL SETTINGS ##########################
 
 //Version
@@ -912,9 +912,33 @@ In any case, laser only enables while moving. At the end of a move it gets
 automatically disabled. 
 */
 
-#define SUPPORT_LASER 1 // set 1 to enable laser support
-#define LASER_PIN ORIG_FAN2_PIN    // set to pin enabling laser, PWM capable pin
-#define LASER_ON_HIGH 1 // Set 0 if low signal enables laser  // Use 0 if hooking FANB- directly to PWM+, 1 if using inverter circuit
+/*
+ On Davinci 1.0A, FAN2_PIN is PWM pin on timer 6, we can use that to PWM laser at 1kHz
+ if the laser has TTL connector.  Easy access is off the top solder pad of R192.  If
+ the laser only has PWR connector, you need to drive a MOSFET as a low side switch.
+ We are using extruder heater wires to control power to the 12V laser with up to 3.3A
+ and avoid the power on burst of a direct power connection.
+
+    M451          enable FFF mode (turns off laser power)
+    M452          enable laser mode (turns on laser power)
+
+ In non-laser mode:
+    M42 P6 S1     turn on laser power
+    M42 P6 S0     turn off laser power
+    M106 P0 S[p]  set air assist to [p] (hook air assist to FANB)
+    M106 P1 S[p]  set laser intensity to [p]
+    M107          turn off laser PWM
+    
+ We can't use the fan pins to power the laser as on a Davinci, they only carry a max
+ of 600ma and the laser would be very dim.  Laser modules that tell you to use the
+ fan plug will be very dim due to this, you need to hook separate laser power and PWM.
+*/
+#define SUPPORT_LASER 1           // set 1 to enable laser support
+#if USE_HEATER0_FOR_LASER_POWER == 1
+#define LASER_PWR HEATER_0_PIN    // set to pin to power laser, for lasers with PWR and PWM
+#endif
+#define LASER_PIN ORIG_FAN2_PIN   // set to pin to enable laser, must be hardware PWM capable pin
+#define LASER_ON_HIGH 1           // Set 0 if low signal enables laser
 
 // ##########################################################################################
 // ##                              CNC configuration                                       ##
