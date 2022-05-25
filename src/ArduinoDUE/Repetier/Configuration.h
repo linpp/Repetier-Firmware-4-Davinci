@@ -25,7 +25,6 @@
 #define MODEL  1//"0" for first generation (jumper JP1 to reset ) , "1" for new generation   (jumper J37 to reset)
 #define REPURPOSE_FAN_TO_COOL_EXTRUSIONS 0 //Setting this to 1 will repurpose the main Extruder cooling fan to be controlled VIA M106/M107
                                            //Warning: for DaVinci 1.0 need to add a permanent fan with power supply to cool extruder
-#define USE_HEATER0_FOR_LASER_POWER 1 // Setting this to 1 will allow using the heater cable to power a 3.3A laser
 // ################ END MANUAL SETTINGS ##########################
 
 //Version
@@ -934,9 +933,6 @@ automatically disabled.
  fan plug will be very dim due to this, you need to hook separate laser power and PWM.
 */
 #define SUPPORT_LASER 1           // set 1 to enable laser support
-#if USE_HEATER0_FOR_LASER_POWER == 1
-#define LASER_PWR HEATER_0_PIN    // set to pin to power laser, for lasers with PWR and PWM
-#endif
 #define LASER_PIN ORIG_FAN2_PIN   // set to pin to enable laser, must be hardware PWM capable pin
 #define LASER_ON_HIGH 1           // Set 0 if low signal enables laser
 
