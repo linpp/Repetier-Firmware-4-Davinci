@@ -1017,14 +1017,29 @@ void Commands::processGCode(GCode *com) {
                 }
 #endif // defined
                 if(com->hasS()) Printer::setNoDestinationCheck(com->S != 0);
-                if(Printer::setDestinationStepsFromGCode(com)) // For X Y Z E F
+                if(Printer::setDestinationStepsFromGCode(com)) {// For X Y Z E F
 #if NONLINEAR_SYSTEM
                     if (!PrintLine::queueNonlinearMove(ALWAYS_CHECK_ENDSTOPS, true, true)) {
                         Com::printWarningFLN(PSTR("executeGCode / queueDeltaMove returns error"));
                     }
 #else
-                    PrintLine::queueCartesianMove(ALWAYS_CHECK_ENDSTOPS, true);
+#if defined(SUPPORT_LASER) && SUPPORT_LASER
+                    // G0 is supposed to be a rapid move, so why is it stuck at G1 speed?
+                    if (com->G == 0 && Printer::mode == PRINTER_MODE_LASER) {
+                        float oldFeedrate = Printer::feedrate;
+                        float rapidX = Printer::maxFeedrate[X_AXIS];
+                        float rapidY = Printer::maxFeedrate[Y_AXIS];
+                        Printer::feedrate = (rapidY < rapidX) ? rapidY : rapidX;        // slower of the two
+                        PrintLine::queueCartesianMove(ALWAYS_CHECK_ENDSTOPS, true);
+                        Printer::feedrate = oldFeedrate;
+                    }
+                    else
+#endif                    
+                    {
+                        PrintLine::queueCartesianMove(ALWAYS_CHECK_ENDSTOPS, true);
+                    }
 #endif
+                }
 #if UI_HAS_KEYS
                 // ui can only execute motion commands if we are not waiting inside a move for an
                 // old move to finish. For normal response times, we always leave one free after

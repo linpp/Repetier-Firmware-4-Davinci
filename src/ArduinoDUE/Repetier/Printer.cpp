@@ -1862,6 +1862,12 @@ void Printer::homeYAxis()
 void Printer::homeZAxis() // Cartesian homing
 {
     long steps;
+#if defined(SUPPORT_LASER) && SUPPORT_LASER
+    if (Printer::mode == PRINTER_MODE_LASER) {      // disable z homing in laser mode, use G92 Z0 to set current position to Z home
+        setZHomed(true);                            // accidental z homing will likely crash the bed into the laser head
+        return;
+    }
+#endif
     if ((MIN_HARDWARE_ENDSTOP_Z && Z_MIN_PIN > -1 && Z_HOME_DIR == -1) || (MAX_HARDWARE_ENDSTOP_Z && Z_MAX_PIN > -1 && Z_HOME_DIR == 1))
     {
 #if Z_HOME_DIR < 0 && Z_PROBE_PIN == Z_MIN_PIN
