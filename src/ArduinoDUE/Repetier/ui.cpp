@@ -1922,25 +1922,26 @@ void UIDisplay::parse(const char *txt,bool ram)
 #endif
             if(c2=='N') addStringP(PSTR(UI_PRINTER_NAME));
             #if UI_AUTOLIGHTOFF_AFTER > 0
-            else if(c2=='s')
-            if((EEPROM::timepowersaving!=maxInactiveTime)||(EEPROM::timepowersaving!=stepperInactiveTime))
+            else if(c2=='s') {
+                if((EEPROM::timepowersaving!=maxInactiveTime)||(EEPROM::timepowersaving!=stepperInactiveTime))
+                        {
+                        addStringP("  ");//for alignement need a better way as it should be depending of size of translation of "off" vs "30min"
+                        addStringP(Com::translatedF(UI_TEXT_ON_ID));//if not defined by preset
+                        }
+                else if(EEPROM::timepowersaving==0)
                     {
-                    addStringP("  ");//for alignement need a better way as it should be depending of size of translation of "off" vs "30min"
-                    addStringP(Com::translatedF(UI_TEXT_ON_ID));//if not defined by preset
+                    addStringP("  ");//for alignement need a better way as it should be depending of size of translation of "off/on" vs "30min"
+                    addStringP(Com::translatedF(UI_TEXT_OFF_ID));        // powersave off
                     }
-            else if(EEPROM::timepowersaving==0)
-                {
-                addStringP("  ");//for alignement need a better way as it should be depending of size of translation of "off/on" vs "30min"
-                addStringP(Com::translatedF(UI_TEXT_OFF_ID));        // powersave off
-                }
-            else if (EEPROM::timepowersaving==(1000 * 60)) addStringP(" 1min");//1mn
-            else if (EEPROM::timepowersaving==(1000 * 60 *5)) addStringP(" 5min");//5 min
-            else if (EEPROM::timepowersaving==(1000 * 60 * 15)) addStringP("15min");//15 min
-            else if (EEPROM::timepowersaving==(1000 * 60 * 30)) addStringP("30min");//30 min
-            else {
-                    addStringP("  ");//for alignement need a better way as it should be depending of size of translation of "off" vs "30min"
-                    addStringP(Com::translatedF(UI_TEXT_ON_ID));//if not defined by preset
-                    }
+                else if (EEPROM::timepowersaving==(1000 * 60)) addStringP(" 1min");//1mn
+                else if (EEPROM::timepowersaving==(1000 * 60 *5)) addStringP(" 5min");//5 min
+                else if (EEPROM::timepowersaving==(1000 * 60 * 15)) addStringP("15min");//15 min
+                else if (EEPROM::timepowersaving==(1000 * 60 * 30)) addStringP("30min");//30 min
+                else {
+                        addStringP("  ");//for alignement need a better way as it should be depending of size of translation of "off" vs "30min"
+                        addStringP(Com::translatedF(UI_TEXT_ON_ID));//if not defined by preset
+                        }
+            }
             #endif
             break;
         case 's': // Endstop positions
@@ -6867,7 +6868,7 @@ void UIDisplay::slowAction(bool allowMoves)
         previousMillisCmd = HAL::timeInMilliseconds(); // prevent stepper/heater disable from timeout during active wizard
 //Davinci Specific, powersave and light management
 #if UI_AUTOLIGHTOFF_AFTER!=0
-if (ui_autolightoff_time==-1) ui_autolightoff_time=HAL::timeInMilliseconds()+EEPROM::timepowersaving;
+if (ui_autolightoff_time==(unsigned)-1) ui_autolightoff_time=HAL::timeInMilliseconds()+EEPROM::timepowersaving;
 if ((ui_autolightoff_time<time) && (EEPROM::timepowersaving>0) )
     {//if printing and keep light on do not swich off
     if(!(EEPROM::bkeeplighton  &&((Printer::menuMode&MENU_MODE_SD_PRINTING)||(Printer::menuMode&MENU_MODE_PRINTING)||(Printer::menuMode&MENU_MODE_SD_PAUSED))))
